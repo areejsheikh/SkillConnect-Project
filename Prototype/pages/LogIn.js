@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import LogInForm from '../components/LogInForm';
 
-const LogIn = () => {
+const LogIn = () => 
   const navigate = useNavigate(); // Initialize navigate function
 
   const handleBackClick = () => {
