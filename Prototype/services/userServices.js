@@ -1,85 +1,89 @@
-.user-options {
-    display: flex;
-    justify-content: center;
-    padding: 4rem 2rem;
-    gap: 2rem;
-}
-
-.user-card {
-    flex: 1;
-    border-radius: 12px;
-    color: #111;
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-    min-height: 250px;
-    display: flex;
-    align-items: center;
-}
-
-.user-card .content {
-    padding: 2rem;
-    /* Removed the transparent background */
-    background: none;
-    border-radius: 12px;
-    margin: 1rem;
-    max-width: 60%;
-}
-
-.user-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.user-card p {
-    font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-    color: #333;
-}
-
-.user-card button {
-    padding: 0.6rem 1.2rem;
-    border: none;
-    border-radius: 6px;
-    background-color: #fff;
-    color: #0052cc;
-    font-weight: 500;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.user-card button:hover {
-    background-color: #f1f1f1;
-}
-
-.arrow {
-    font-size: 1rem;
-}
-
-.candidate {
-    background-image: url('/public/laptop1.jpg');
-}
-
-.employer {
-    background-image: url('/public/employer1.jpg');
-    color: white;
-}
+const API_URL = 'http://localhost:5000/users'; // Base API URL for authentication
 
 
+export const createUser = async (userData) => {
+  try {
+    //console.log('Creating user with data:', userData); // Debugging line
+    const response = await fetch(`${API_URL}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
 
-.candidate h3 {
-    color: white; /* Make the heading white for the candidate section */
-}
+    if (!response.ok) {
+      const responseData = await response.json();
+      throw new Error(`Failed to create user: ${responseData.message}`);
+    }
 
-.candidate p {
-    color: white; /* Make the paragraph white for the candidate section */
-}
+    const responseData = await response.json();
+    console.log('response from server:', responseData); // Debugging line
+    return responseData;
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
+  }
+};
 
-.employer h3 {
-    color: black; /* Make the heading black for the employer section */
-}
+
+export const logUserIn = async (userData) => {
+  try {
+    const response = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const responseData = await response.json();
+      throw new Error(`Failed to login user : ${responseData.message}`);
+    }
+
+    const responseData = await response.json();
+    console.log('response from server:', responseData); // Debugging line
+    return responseData;
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    throw error;
+  }
+};
+
+
+export const updateUserPassword = async (userID, passwordData) => {
+  try {
+    console.log('Updating password for user ID:', userID); // Debugging line
+    console.log('Password data:', passwordData); // Debugging line
+    userID = 2; //harcoded , front end sa dekh wha nhi aa rhi
+     const response = await fetch(`${API_URL}/updatePassword/${userID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword
+      }),
+    });
+
+    const responseData = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(responseData.message || 'Failed to update password');
+    }
+
+    console.log('Password update response:', responseData);
+    return responseData;
+  } catch (error) {
+    console.error('Error updating password:', error);
+    throw error;
+  }
+};
+
+export default {
+  createUser,
+  logUserIn,
+  updateUserPassword
+};
